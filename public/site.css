@@ -1,0 +1,30 @@
+body {
+    font-family: Jaldi, Arial, Helvetica, sans-serif;
+    background-color: #333;
+    color: white;
+    margin: 0;
+}
+
+nav {
+    background-color: black;
+    width: 100%;
+    margin: 0;
+}
+
+nav .title {
+    font-size: 20px;
+    padding: 10px 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+#results {
+    margin: 0 auto;
+    width: 600px;
+}
+
+#results .photo-wrapper {
+    text-align: center;
+}
