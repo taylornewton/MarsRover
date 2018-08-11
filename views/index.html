@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+</head>
+<body>
+    <h1>Mars Rover Photo of the Day</h1>
+    <div id="results"></div>
+
+    <script>
+        $.ajax({
+            url: '/photos',
+            success: function(result) {
+                result.forEach(element => {
+                    element.forEach(photo => {
+                        $('#results').append('<div><p>'+ photo.date + ' ' + photo.camera
+                            +'</p><img height="400" src="' + photo.src + '"></div>');
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
