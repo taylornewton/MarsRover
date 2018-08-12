@@ -28,3 +28,33 @@ h1 {
 #results .photo-wrapper {
     text-align: center;
 }
+
+.btn {
+    display: block;
+    margin: 0 auto;
+    background: none;
+    border: 1px solid white;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+.btn:hover {
+    background: white;
+    color: #333;
+}
+.btn[disabled] {
+    color: #aaa;
+    border-color: #aaa;
+    cursor: default;
+}
+.btn[disabled]:hover {
+    background: none;
+    color: #aaa;
+}
+
+#errorMessage {
+    text-align: center;
+    font-style: italic;
+    margin: 10px 20px;
+}

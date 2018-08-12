@@ -1,14 +1,18 @@
 const express = require('express'),
-  http = require('http'),
-  request = require('request-promise'),
-  router = express.Router(),
-  fs = require('fs');
+      http = require('http'),
+      request = require('request-promise'),
+      router = express.Router(),
+      fs = require('fs');
 
-const cameraName = "fhaz";
-const roverName = "curiosity";
-const apiKey = "DEMO_KEY";
-const baseUrl = "https://api.nasa.gov/mars-photos/api/v1/rovers/" + roverName + "/photos"
-const params = "?camera=" + cameraName + "&api_key=" + apiKey;
+const cameraName = "fhaz",
+      roverName = "curiosity",
+      apiKey = "eIPQ6JZTYa2hKspuut2F8RVwu8uFk9IMDON7ltXF";
+      params = "?camera=" + cameraName + "&api_key=" + apiKey;
+
+const baseUrl = "https://api.nasa.gov/mars-photos/api/v1/rovers/" 
+    + roverName + "/photos" 
+    + params;
+
 const img_dir = "images/";
 
 /**
@@ -24,7 +28,8 @@ router.get('/', (req, res) => {
     var promiseArray = [];
     dates.forEach(date => {
       const dateString = FormatDate(date);
-      promiseArray.push(GetPhotos(dateString));
+      if (dateString)
+        promiseArray.push(GetPhotos(dateString));
     });
 
     // When photo requests return, process results
@@ -33,13 +38,13 @@ router.get('/', (req, res) => {
         statusCode: 200,
         photos: []
       };
+
       // Process results from each date request
       results.forEach(result => {
         response.photos.push(GetPhotosFromResult(result));
       });
       
       res.json(response);
-
     }, e => { 
       console.log('Error occurred retrieving photos: ' + e);
       res.json(e);
@@ -58,11 +63,17 @@ router.get('/', (req, res) => {
  *    new string representing date, formatted as YYYY-MM-DD
  */
 function FormatDate(date) {
-  var d = new Date(date);      
-  var dateString = d.getUTCFullYear() + "-" 
-    + (d.getUTCMonth() + 1) + "-" 
-    + d.getUTCDate();
-  // TODO fix off by one error
+  var d = new Date(date);
+
+  // invalid date
+  if (isNaN(d)) {
+    return null;
+  }
+
+  var dateString = d.getUTCFullYear() + '-'
+    + ('0' + (d.getMonth() + 1)).slice(-2) + '-'
+    + ('0' + d.getDate()).slice(-2);
+
   return dateString;
 }
 
@@ -74,8 +85,8 @@ function FormatDate(date) {
  *    promise of result from API call
  */
 function GetPhotos(dateString) {
-  const url = baseUrl + params + "&earth_date=" + dateString;
-  return request.get({ url: url });
+  const url = baseUrl + "&earth_date=" + dateString;
+  return request.get({ url });
 }
 
 /**
@@ -87,6 +98,7 @@ function GetPhotos(dateString) {
  */
 function GetPhotosFromResult(result) {
   pics = [];
+
   // Convert photos to custom objects
   const jsonResult = JSON.parse(result);
   jsonResult.photos.forEach(photo => {
@@ -118,7 +130,6 @@ function DownloadPhoto(photo) {
   http.get(photo.src, (response) => {
     response.pipe(file);
     file.on('finish', function() {
-      console.log('File download complete: ' + path);
       file.close();
     });
   }).on('error', (err) => {
